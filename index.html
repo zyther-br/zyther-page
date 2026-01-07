@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zyther - Soluções Tecnológicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'outfit': ['Outfit', 'sans-serif'],
+                    },
+                    letterSpacing: {
+                        'wider-xl': '0.15em',
+                        'wider-2xl': '0.2em',
+                        'wider-3xl': '0.3em',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --accent: #000000;
+            --bg-rgb: 255, 255, 255;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #999999;
+            --accent: #ffffff;
+            --bg-rgb: 0, 0, 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, background-color 0.3s ease;
+            transform: translate(-50%, -50%);
+            left: 0;
+            top: 0;
+        }
+
+        .custom-cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+            transform: translate(-50%, -50%);
+            left: 0;
+            top: 0;
+        }
+
+        .custom-cursor.hover {
+            transform: translate(-50%, -50%) scale(1.8);
+            background-color: rgba(var(--bg-rgb), 0.1);
+        }
+
+        a, button, .mobile-menu-button, .feature-card {
+            cursor: none !important;
+        }
+
+        a *, button *, .mobile-menu-button *, .feature-card * {
+            cursor: none !important;
+        }
+
+        .scroll-arrow {
+            cursor: none !important;
+        }
+
+        .cta-button {
+            cursor: none !important;
+        }
+
+        .theme-toggle {
+            cursor: none !important;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                cursor: auto !important;
+            }
+            
+            a, button, .mobile-menu-button, .feature-card,
+            a *, button *, .mobile-menu-button *, .feature-card *,
+            .scroll-arrow, .cta-button, .theme-toggle {
+                cursor: auto !important;
+            }
+            
+            .custom-cursor,
+            .custom-cursor-dot {
+                display: none;
+            }
+        }
+
+        nav.scrolled {
+            background: rgba(var(--bg-rgb), 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav.scrolled #logo-nav-container {
+            pointer-events: auto;
+        }
+
+        nav:not(.scrolled) #logo-nav-container {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Logo Container */
+        #logo-nav-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 140px;
+            height: 60px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .scroll-indicator::before {
+            content: '';
+            display: block;
+            width: 2px;
+            height: 40px;
+            background: var(--accent);
+            margin: 0 auto 10px;
+        }
+
+        /* Scroll Arrow */
+        .scroll-arrow {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 1;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+        }
+
+        .scroll-arrow.show {
+            opacity: 1 !important;
+        }
+
+        .scroll-arrow.hide {
+            opacity: 0 !important;
+        }
+
+        .scroll-arrow span {
+            display: block;
+            width: 20px;
+            height: 20px;
+            border-bottom: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+            transform: rotate(45deg);
+            animation: scrollArrowBounce 2s infinite;
+        }
+
+        .scroll-arrow span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .scroll-arrow-text {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        @keyframes scrollArrowBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(45deg);
+            }
+            40% {
+                transform: translateY(-10px) rotate(45deg);
+            }
+            60% {
+                transform: translateY(-5px) rotate(45deg);
+            }
+        }
+
+        .features {
+            background-color: var(--bg-secondary);
+            transition: background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(var(--bg-rgb), 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--bg-primary);
+            border-top: 1px solid rgba(var(--bg-rgb), 0.05);
+            transition: background-color 0.3s ease;
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .stats-grid {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .stat-item {
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Results Section */
+        .results-section {
+            background: transparent;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .results-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .results-section > div {
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-card {
+            padding: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .result-number {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Trusted Companies Section */
+        .trusted-companies {
+            background: transparent;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .trusted-companies::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .trusted-companies > div {
+            position: relative;
+            z-index: 1;
+        }
+
+        .companies-carousel-wrapper {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .companies-carousel {
+            display: flex;
+            gap: 4rem;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .companies-carousel:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .company-logo {
+            flex-shrink: 0;
+            width: 250px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .company-logo:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .company-logo {
+                width: 180px;
+                height: 90px;
+            }
+        }
+
+        /* Solutions Section */
+        .features {
+            background: var(--bg-primary);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Solutions Cards */
+        .solution-card {
+            padding: 2.5rem;
+            background: var(--bg-primary);
+            border: 1px solid rgba(var(--bg-rgb), 0.1);
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .solution-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+
+        .solution-icon {
+            transition: transform 0.4s ease;
+        }
+
+        .solution-card:hover .solution-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        .feature-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--text-primary);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(var(--bg-rgb), 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        .cta-button {
+            background: var(--accent);
+            color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(var(--bg-rgb), 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--text-primary);
+            padding: 60px 20px 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            line-height: 2;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(var(--bg-rgb), 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--text-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-5px);
+        }
+
+        .shape-1,
+        .shape-2,
+        .shape-3 {
+            border: 2px solid var(--accent);
+        }
+
+        /* SVG color filter for dark mode */
+        [data-theme="dark"] #logo-nav,
+        [data-theme="dark"] #logo-text,
+        [data-theme="dark"] #logo-hero {
+            filter: brightness(0) invert(1);
+        }
+
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .mobile-menu-button span {
+            width: 25px;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-button.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .mobile-menu-button.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-button.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            background: var(--bg-primary);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: top 0.3s ease;
+            z-index: 999;
+            padding-top: 90px;
+            padding-bottom: 20px;
+            display: none;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            top: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px 30px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: background 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .mobile-menu a {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-menu a:hover {
+            background: var(--bg-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
+            }
+
+            .mobile-menu-button,
+            .mobile-menu {
+                display: flex;
+            }
+
+            #logo-nav-container {
+                width: 100px;
+                height: 50px;
+            }
+
+            .hero {
+                padding-top: 120px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 20px 20px !important;
+            }
+
+            #logo-nav-container {
+                width: 80px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body class="font-outfit overflow-x-hidden">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div>
+
+    <nav id="navbar" class="fixed top-0 left-0 w-full px-8 sm:px-12 md:px-[60px] py-3 md:py-[20px] flex justify-between items-center z-[1000] bg-transparent transition-all duration-300">
+        <div id="logo-nav-container">
+            <img id="logo-nav" src="logotipo_zyther.svg" alt="Zyther" class="w-[30px] sm:w-[35px] md:w-[40px] transition-all duration-300">
+            <img id="logo-text" src="zyther_black.svg" alt="Zyther" class="w-[75px] sm:w-[85px] md:w-[100px] transition-all duration-300">
+        </div>
+        
+        <div class="nav-links flex gap-8 md:gap-[50px] items-center">
+            <button class="theme-toggle bg-transparent border-2 w-10 h-10 md:w-[45px] md:h-[45px] rounded-full cursor-pointer text-lg md:text-xl flex items-center justify-center transition-all duration-300 hover:rotate-180" id="themeToggle">☀</button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="mobile-menu-button" id="mobileMenuButton">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu flex-col" id="mobileMenu">
+        <div class="flex flex-wrap gap-2 p-4 px-10 items-center justify-between">
+            <a href="#print" class="mobile-menu-link min-w-[100px] text-center !p-2 !text-sm !border-0 rounded">PRINT</a>
+            <a href="#tech" class="mobile-menu-link min-w-[100px] text-center !p-2 !text-sm !border-0 rounded">TECH</a>
+            <a href="#solutions" class="mobile-menu-link min-w-[100px] text-center !p-2 !text-sm !border-0 rounded">SOLUÇÕES</a>
+            <button class="theme-toggle bg-transparent border-2 w-[100px] h-[40px] rounded-full cursor-pointer text-lg flex items-center justify-center transition-all duration-300" id="themeToggleMobile">☀</button>
+        </div>
+    </div>
+    
+    <canvas id="background-canvas" class="fixed top-0 left-0 w-full h-screen z-0"></canvas>
+
+    <div class="content relative z-[1]">
+        <section class="hero min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-5 pt-24 sm:pt-28 md:pt-[100px] pb-12 sm:pb-16 md:pb-20 relative">
+            <div class="geometric-shape shape-1 absolute w-16 sm:w-20 md:w-[100px] h-16 sm:h-20 md:h-[100px] opacity-10 top-[20%] left-[5%] sm:left-[10%] pointer-events-none"></div>
+            <div class="geometric-shape shape-2 absolute w-24 sm:w-32 md:w-[150px] h-24 sm:h-32 md:h-[150px] opacity-10 top-[60%] right-[5%] sm:right-[15%] rounded-full pointer-events-none"></div>
+            <div class="geometric-shape shape-3 absolute w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 opacity-10 bottom-[20%] left-[10%] sm:left-[20%] rotate-45 pointer-events-none"></div>
+            
+            <h1 class="hero-title flex items-center justify-center gap-4 sm:gap-6 md:gap-8 text-[clamp(3rem,12vw,9rem)] font-extrabold tracking-wider-xl mb-6 sm:mb-8 md:mb-[30px] opacity-0">
+                <img id="logo-hero" src="zyther_black.svg" alt="Zyther" class="w-[80vw] sm:w-[70vw] md:w-[600px] max-w-full transition-all duration-300">
+            </h1>
+            <p class="hero-tagline text-[clamp(0.75rem,2.5vw,1.5rem)] font-light tracking-wider-2xl opacity-0 mb-12 sm:mb-16 md:mb-[60px] uppercase px-4">O Futuro é Agora</p>
+            
+            <!-- Scroll Arrow -->
+            <div class="scroll-arrow">
+                <span></span>
+                <span></span>
+            </div>
+        </section>
+
+        <!-- About Section - Full Screen -->
+        <section class="about-section min-h-screen flex items-center justify-center px-4 sm:px-5 py-20 sm:py-24 md:py-32">
+            <div class="max-w-[900px] mx-auto text-center">
+                <h2 class="text-[clamp(2rem,7vw,4.5rem)] mb-12 sm:mb-16 font-light tracking-wider opacity-0">
+                    Quem <span class="font-bold">Somos</span>
+                </h2>
+                <p class="text-lg sm:text-xl md:text-2xl leading-relaxed mb-8 sm:mb-10 opacity-0" style="animation-delay: 0.2s">
+                    A <strong>Zyther</strong> é uma empresa de tecnologia que nasceu com o propósito de transformar ideias em soluções digitais inovadoras. Combinamos expertise técnica com visão estratégica para entregar resultados que impactam positivamente os negócios dos nossos clientes.
+                </p>
+                <p class="text-lg sm:text-xl md:text-2xl leading-relaxed mb-10 sm:mb-12 opacity-0" style="animation-delay: 0.4s">
+                    Nossa equipe é formada por profissionais apaixonados por tecnologia, sempre atualizados com as últimas tendências do mercado. Acreditamos que o futuro é construído através da inovação constante e da excelência em cada projeto que desenvolvemos.
+                </p>
+                <div class="stats-grid grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 mt-16 sm:mt-20 opacity-0" style="animation-delay: 0.6s">
+                    <div class="stat-item">
+                        <div class="text-4xl sm:text-5xl md:text-6xl font-bold mb-2">50+</div>
+                        <div class="text-sm sm:text-base md:text-lg text-[var(--text-secondary)] tracking-wide">Projetos Entregues</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="text-4xl sm:text-5xl md:text-6xl font-bold mb-2">98%</div>
+                        <div class="text-sm sm:text-base md:text-lg text-[var(--text-secondary)] tracking-wide">Satisfação</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="text-4xl sm:text-5xl md:text-6xl font-bold mb-2">5+</div>
+                        <div class="text-sm sm:text-base md:text-lg text-[var(--text-secondary)] tracking-wide">Anos de Experiência</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features min-h-screen flex items-center justify-center px-4 sm:px-5 py-12 sm:py-16 md:py-20" id="solutions">
+            <div class="section-content max-w-[1400px] w-full">
+                <h2 class="text-[clamp(1.75rem,6vw,4rem)] mb-12 sm:mb-16 md:mb-20 text-center opacity-0 font-light tracking-wider">
+                    Nossas <span class="font-bold">Soluções</span>
+                </h2>
+                <div class="solutions-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                    <div class="solution-card group opacity-0 translate-y-[50px]">
+                        <div class="solution-icon mb-4 sm:mb-6">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl md:text-[1.8rem] mb-3 sm:mb-4 font-semibold">Desenvolvimento</h3>
+                        <p class="leading-relaxed text-sm sm:text-base text-[var(--text-secondary)]">Aplicações web e mobile de alta performance com as tecnologias mais modernas do mercado.</p>
+                    </div>
+                    <div class="solution-card group opacity-0 translate-y-[50px]">
+                        <div class="solution-icon mb-4 sm:mb-6">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl md:text-[1.8rem] mb-3 sm:mb-4 font-semibold">Cloud & DevOps</h3>
+                        <p class="leading-relaxed text-sm sm:text-base text-[var(--text-secondary)]">Infraestrutura escalável em nuvem com pipelines automatizados para deploy contínuo.</p>
+                    </div>
+                    <div class="solution-card group opacity-0 translate-y-[50px]">
+                        <div class="solution-icon mb-4 sm:mb-6">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl md:text-[1.8rem] mb-3 sm:mb-4 font-semibold">Consultoria</h3>
+                        <p class="leading-relaxed text-sm sm:text-base text-[var(--text-secondary)]">Estratégias tecnológicas personalizadas para transformação digital do seu negócio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section min-h-screen flex items-center justify-center px-4 sm:px-5 py-16 sm:py-20 md:py-24">
+            <div class="max-w-[1200px] mx-auto w-full">
+                <h2 class="text-[clamp(1.75rem,6vw,4rem)] mb-16 sm:mb-20 md:mb-24 text-center opacity-0 font-light tracking-wider">
+                    Resultados que <span class="font-bold">Falam</span>
+                </h2>
+                <div class="results-grid grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-16">
+                    <div class="result-card opacity-0">
+                        <div class="result-number text-5xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6">+150%</div>
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-3 sm:mb-4">Aumento de Performance</h3>
+                        <p class="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+                            Nossos clientes experimentam em média 150% de melhoria na performance de suas aplicações após nossas otimizações.
+                        </p>
+                    </div>
+                    <div class="result-card opacity-0">
+                        <div class="result-number text-5xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6">-40%</div>
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-3 sm:mb-4">Redução de Custos</h3>
+                        <p class="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+                            Infraestrutura otimizada e automação de processos resultam em economia significativa de recursos.
+                        </p>
+                    </div>
+                    <div class="result-card opacity-0">
+                        <div class="result-number text-5xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6">24/7</div>
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-3 sm:mb-4">Disponibilidade</h3>
+                        <p class="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+                            Sistemas robustos e monitoramento contínuo garantem máxima disponibilidade para seu negócio.
+                        </p>
+                    </div>
+                    <div class="result-card opacity-0">
+                        <div class="result-number text-5xl sm:text-6xl md:text-7xl font-bold mb-4 sm:mb-6">100%</div>
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-3 sm:mb-4">Código Testado</h3>
+                        <p class="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+                            Qualidade garantida através de testes automatizados e revisões rigorosas de código.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trusted Companies Section -->
+        <section class="trusted-companies py-20 sm:py-28 md:py-36 px-4 sm:px-5 overflow-hidden">
+            <div class="max-w-full mx-auto">
+                <h2 class="text-[clamp(2rem,6vw,3.5rem)] mb-16 sm:mb-20 md:mb-24 text-center font-light tracking-wider">
+                    Empresas que <span class="font-bold">Confiam</span> em Nós
+                </h2>
+                <div class="companies-carousel-wrapper">
+                    <div class="companies-carousel">
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 1</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 2</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 3</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 4</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 5</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 6</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 7</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 8</span>
+                            </div>
+                        </div>
+                        <!-- Duplicate for seamless loop -->
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 1</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 2</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 3</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 4</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 5</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 6</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 7</span>
+                            </div>
+                        </div>
+                        <div class="company-logo">
+                            <div class="w-full h-full border-2 border-current rounded-lg flex items-center justify-center">
+                                <span class="text-xl sm:text-2xl font-bold tracking-wider">EMPRESA 8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section min-h-screen flex items-center justify-center text-center px-4 sm:px-5 py-12 sm:py-16 md:py-20">
+            <div class="section-content max-w-[1200px] w-full">
+                <h2 class="text-[clamp(1.75rem,6vw,4rem)] mb-8 sm:mb-10 md:mb-[50px] text-center opacity-0">Pronto para Inovar?</h2>
+                <p class="text-base sm:text-lg md:text-xl mb-4 sm:mb-5 max-w-2xl mx-auto">
+                    Vamos construir o futuro juntos. Entre em contato e descubra como podemos transformar suas ideias em realidade.
+                </p>
+                <button class="cta-button px-8 sm:px-12 md:px-[60px] py-4 sm:py-5 text-base sm:text-lg md:text-xl border-none cursor-pointer font-semibold tracking-wide mt-6 sm:mt-8 md:mt-[30px] opacity-0 transition-transform duration-300 hover:scale-105">
+                    <span>ENTRE EM CONTATO</span>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ZYTHER</h4>
+                <p>Transformando ideias em soluções tecnológicas inovadoras desde 2025.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="LinkedIn">in</a>
+                    <a href="#" aria-label="Instagram">ig</a>
+                    <a href="#" aria-label="GitHub">gh</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>SERVIÇOS</h4>
+                <a href="#" style="display: block;">Desenvolvimento Web</a>
+                <a href="#" style="display: block;">Aplicativos Mobile</a>
+                <a href="#" style="display: block;">Cloud & DevOps</a>
+                <a href="#" style="display: block;">Consultoria Tech</a>
+            </div>
+            <div class="footer-section">
+                <h4>EMPRESA</h4>
+                <a href="#" style="display: block;">Sobre Nós</a>
+                <a href="#" style="display: block;">Portfólio</a>
+                <a href="#" style="display: block;">Blog</a>
+                <a href="#" style="display: block;">Carreiras</a>
+            </div>
+            <div class="footer-section">
+                <h4>CONTATO</h4>
+                <p>contato@zyther.com</p>
+                <p>+55 (11) 9999-9999</p>
+                <p>São Paulo, SP - Brasil</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Zyther. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.custom-cursor-dot');
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let dotX = 0;
+        let dotY = 0;
+        let scrolled = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update dot position immediately
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+
+        // Track scroll position
+        window.addEventListener('scroll', () => {
+            scrolled = window.scrollY;
+        });
+
+        function animateCursor() {
+            // Smooth following cursor for the circle
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effect on interactive elements
+        const hoverElements = document.querySelectorAll('a, button, .mobile-menu-button, .feature-card, .scroll-arrow');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenuButton.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuButton.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        const html = document.documentElement;
+        const navbar = document.getElementById('navbar');
+        const logoNav = document.getElementById('logo-nav');
+        const logoText = document.getElementById('logo-text');
+        const logoHero = document.getElementById('logo-hero');
+        
+        let isDark = false;
+        
+        function toggleTheme() {
+            isDark = !isDark;
+            html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☾' : '☀';
+            themeToggleMobile.textContent = isDark ? '☾' : '☀';
+            
+            // Update logo colors
+            if (isDark) {
+                logoNav.style.filter = 'brightness(0) invert(1)';
+                logoText.style.filter = 'brightness(0) invert(1)';
+                logoHero.style.filter = 'brightness(0) invert(1)';
+            } else {
+                logoNav.style.filter = 'none';
+                logoText.style.filter = 'none';
+                logoHero.style.filter = 'none';
+            }
+            
+            updateCanvasColors();
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggleMobile.addEventListener('click', toggleTheme);
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Canvas Background
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Particles
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.baseSpeedX = Math.random() * 0.5 - 0.25;
+                this.baseSpeedY = Math.random() * 0.5 - 0.25;
+                this.speedX = this.baseSpeedX;
+                this.speedY = this.baseSpeedY;
+            }
+
+            update() {
+                // Calculate distance from cursor
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                // Magnetic/repulsion effect based on cursor proximity
+                const maxDistance = 150; // pixels
+                if (distance < maxDistance && distance > 0) {
+                    const influence = 1 - (distance / maxDistance);
+                    const force = influence * 2; // strength of the effect
+                    
+                    // Repel particles away from cursor
+                    this.speedX = this.baseSpeedX - (dx / distance) * force;
+                    this.speedY = this.baseSpeedY - (dy / distance) * force;
+                } else {
+                    // Return to base speed gradually
+                    this.speedX += (this.baseSpeedX - this.speedX) * 0.1;
+                    this.speedY += (this.baseSpeedY - this.speedY) * 0.1;
+                }
+
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                // Calculate distance for opacity variation
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = 150;
+                
+                // Increase opacity when cursor is near
+                let opacity = 0.3;
+                if (distance < maxDistance) {
+                    const influence = 1 - (distance / maxDistance);
+                    opacity = 0.3 + (influence * 0.4); // up to 0.7 opacity
+                }
+                
+                ctx.fillStyle = isDark ? `rgba(255,255,255,${opacity})` : `rgba(0,0,0,${opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        function updateCanvasColors() {
+            // Canvas já atualiza automaticamente via requestAnimationFrame
+        }
+
+        // Anime.js Animations
+        
+        // Hero title animation
+        anime({
+            targets: '.hero-title',
+            opacity: [0, 1],
+            translateY: [50, 0],
+            duration: 1200,
+            easing: 'easeOutExpo',
+            delay: 300
+        });
+
+        // Hero tagline animation
+        anime({
+            targets: '.hero-tagline',
+            opacity: [0, 1],
+            translateY: [30, 0],
+            duration: 1000,
+            easing: 'easeOutExpo',
+            delay: 600
+        });
+
+        // Scroll arrow animation
+        const scrollArrow = document.querySelector('.scroll-arrow');
+        let inactivityTimer;
+        let scrollArrowVisible = false;
+        let isInHeroSection = true;
+
+        // Show arrow immediately after animations
+        setTimeout(() => {
+            const heroSection = document.querySelector('.hero');
+            const heroBottom = heroSection ? heroSection.offsetHeight : window.innerHeight;
+            
+            if (window.scrollY < heroBottom - 200) {
+                scrollArrow.classList.add('show');
+                scrollArrow.classList.remove('hide');
+                scrollArrow.style.opacity = '1';
+                scrollArrowVisible = true;
+            }
+        }, 2000); // Aparece após 2 segundos
+
+        // Show arrow after inactivity
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            
+            const heroSection = document.querySelector('.hero');
+            const heroBottom = heroSection ? heroSection.offsetHeight : window.innerHeight;
+            isInHeroSection = window.scrollY < heroBottom - 200;
+            
+            if (isInHeroSection && !scrollArrowVisible) {
+                inactivityTimer = setTimeout(() => {
+                    if (isInHeroSection && window.scrollY < heroBottom - 200) {
+                        scrollArrow.classList.add('show');
+                        scrollArrow.classList.remove('hide');
+                        scrollArrow.style.opacity = '1';
+                        scrollArrowVisible = true;
+                    }
+                }, 3000);
+            }
+        }
+
+        // Reset timer on interaction
+        document.addEventListener('keydown', resetInactivityTimer);
+
+        // Click scroll arrow to scroll down
+        document.querySelector('.scroll-arrow').addEventListener('click', () => {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+
+        // Hide scroll arrow on scroll
+        window.addEventListener('scroll', () => {
+            const heroSection = document.querySelector('.hero');
+            const heroBottom = heroSection ? heroSection.offsetHeight : window.innerHeight;
+            
+            if (window.scrollY > heroBottom - 200) {
+                scrollArrow.classList.remove('show');
+                scrollArrow.classList.add('hide');
+                scrollArrowVisible = false;
+                isInHeroSection = false;
+                clearTimeout(inactivityTimer);
+            } else {
+                isInHeroSection = true;
+                if (!scrollArrowVisible) {
+                    resetInactivityTimer();
+                }
+            }
+        });
+
+        // Geometric shapes animation - scroll based only
+        window.addEventListener('scroll', () => {
+            const shapes = document.querySelectorAll('.geometric-shape');
+            
+            shapes.forEach((shape, index) => {
+                const speed = 0.3 + (index * 0.1);
+                const yPos = scrolled * speed;
+                const rotation = scrolled * (0.1 + index * 0.05);
+                
+                if (shape.classList.contains('shape-1')) {
+                    shape.style.transform = `translateY(${yPos}px) rotate(${rotation}deg)`;
+                } else if (shape.classList.contains('shape-2')) {
+                    shape.style.transform = `translateY(${yPos * 0.5}px) scale(${1 + scrolled * 0.0002})`;
+                } else if (shape.classList.contains('shape-3')) {
+                    shape.style.transform = `translateY(${yPos * 0.8}px) rotate(${45 + rotation}deg)`;
+                }
+            });
+        });
+
+        // Scroll-triggered animations with reverse on scroll up
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Entering viewport - animate in
+                    if (entry.target.classList.contains('feature-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [50, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+                    } else if (entry.target.classList.contains('solution-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [50, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo',
+                            delay: anime.stagger(100)
+                        });
+                    } else if (entry.target.classList.contains('result-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 1000,
+                            easing: 'easeOutExpo',
+                            delay: anime.stagger(150)
+                        });
+                    } else if (entry.target.classList.contains('companies-carousel')) {
+                        anime({
+                            targets: entry.target.querySelectorAll('.company-logo'),
+                            opacity: [0.3, 0.5],
+                            scale: [0.9, 1],
+                            duration: 600,
+                            easing: 'easeOutExpo',
+                            delay: anime.stagger(80)
+                        });
+                    } else if (entry.target.classList.contains('about-section')) {
+                        anime({
+                            targets: entry.target.querySelectorAll('h2'),
+                            opacity: [0, 1],
+                            translateY: [-30, 0],
+                            duration: 1000,
+                            easing: 'easeOutExpo'
+                        });
+                        anime({
+                            targets: entry.target.querySelectorAll('p'),
+                            opacity: [0, 1],
+                            translateY: [20, 0],
+                            duration: 800,
+                            easing: 'easeOutExpo',
+                            delay: anime.stagger(200, {start: 300})
+                        });
+                        anime({
+                            targets: entry.target.querySelector('.stats-grid'),
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            duration: 1000,
+                            easing: 'easeOutExpo',
+                            delay: 800
+                        });
+                    } else if (entry.target.tagName === 'H2') {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateX: [-50, 0],
+                            duration: 1000,
+                            easing: 'easeOutExpo'
+                        });
+                    } else if (entry.target.classList.contains('cta-button')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            scale: [0.8, 1],
+                            duration: 800,
+                            easing: 'easeOutElastic(1, .6)'
+                        });
+                    }
+                } else {
+                    // Leaving viewport - animate out
+                    if (entry.target.classList.contains('feature-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [1, 0],
+                            translateY: [0, 50],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.classList.contains('solution-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [1, 0],
+                            translateY: [0, 50],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.classList.contains('result-card')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [1, 0],
+                            translateY: [0, 30],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.classList.contains('companies-carousel')) {
+                        anime({
+                            targets: entry.target.querySelectorAll('.company-logo'),
+                            opacity: [0.5, 0.3],
+                            scale: [1, 0.9],
+                            duration: 500,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.classList.contains('about-section')) {
+                        anime({
+                            targets: entry.target.querySelectorAll('h2'),
+                            opacity: [1, 0],
+                            translateY: [0, -30],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                        anime({
+                            targets: entry.target.querySelectorAll('p'),
+                            opacity: [1, 0],
+                            translateY: [0, 20],
+                            duration: 500,
+                            easing: 'easeInExpo'
+                        });
+                        anime({
+                            targets: entry.target.querySelector('.stats-grid'),
+                            opacity: [1, 0],
+                            translateY: [0, 30],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.tagName === 'H2') {
+                        anime({
+                            targets: entry.target,
+                            opacity: [1, 0],
+                            translateX: [0, -50],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    } else if (entry.target.classList.contains('cta-button')) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [1, 0],
+                            scale: [1, 0.8],
+                            duration: 600,
+                            easing: 'easeInExpo'
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => observer.observe(card));
+        document.querySelectorAll('.solution-card').forEach(card => observer.observe(card));
+        document.querySelectorAll('.result-card').forEach(card => observer.observe(card));
+        document.querySelectorAll('.companies-carousel').forEach(carousel => observer.observe(carousel));
+        document.querySelectorAll('.about-section').forEach(section => observer.observe(section));
+        document.querySelectorAll('h2').forEach(h2 => observer.observe(h2));
+        document.querySelectorAll('.cta-button').forEach(btn => observer.observe(btn));
+
+        // Mouse parallax effect with Anime.js - disabled for scroll-based movement
+        document.addEventListener('mousemove', (e) => {
+            // Mouse tracking is now handled by custom cursor
+        });
+
+        // Scroll-based parallax for feature cards
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const speed = 0.5 + (index * 0.1);
+                    const yPos = -(scrolled * speed * 0.05);
+                    card.style.transform = `translateY(${yPos}px)`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

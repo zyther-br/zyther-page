@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 978.01 136">
+  <path d="M150,0H0v19.9c37.7.2,75.3.4,113,.6L0,121v15h150v-21H38L150,13V0Z"/>
+  <path d="M243,79L177,0h27.5l48.5,60L300,0h27.5l-63.5,79v57h-21v-57Z"/>
+  <path d="M485,0h-131v20h56v116h21V20h54V0Z"/>
+  <path d="M540,0h-21v136h21v-58h92v58h20V0h-20v58h-92V0Z"/>
+  <path d="M680,136V0h125v21h-105v38h99l-10,19h-89v38h105v20h-125Z"/>
+  <path d="M838,21V0h104c4,0,35.5,6,36,38s-33,41-33,41l32,57h-22l-31-57h-66v57h-20V59s94.5.5,104,0,15-9.5,15-13v-12c0-6-9.5-13-15-13h-104Z"/>
+</svg>
